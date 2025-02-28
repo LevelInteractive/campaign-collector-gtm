@@ -1,5 +1,9 @@
 # Campaign Collector
 
+<img src="assets/tpl-overview.png" width=830 style="margin: 0 auto; display: block;" />
+
+---
+
 This tag template is a wrapper around the main CampaignCollector.js library and provides a simplified interface for users to configure the library without having to utilize Custom HTML/JS code to do so. 
 
 > [!IMPORTANT]
