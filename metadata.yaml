@@ -1,6 +1,4 @@
 homepage: "https://www.level.agency?utm_source=google&utm_medium=gtm-tpl-gallery&utm_campaign=campaign-collector"
 documentation: "https://github.com/LevelInteractive/campaign-collector"
 versions:
-  # Latest version
   - sha: 7fc7ab68c378fe09e944373f9f779cc1b00d180a
-    changeNotes: v1 release of template. 
