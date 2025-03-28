@@ -1,5 +1,7 @@
 homepage: "https://www.level.agency?utm_source=google&utm_medium=gtm-tpl-gallery&utm_campaign=campaign-collector"
 documentation: "https://github.com/LevelInteractive/campaign-collector"
 versions:
+  - sha: 3563e8508b03ed0a5c664f1c122ad984007faaab
+    changeNotes: Fixes incorrect use of substr instead of substring in template logic for common cookie filter on  _gcl_ag (wbraid) cookie. Also updates license and README.
   - sha: 7fc7ab68c378fe09e944373f9f779cc1b00d180a
     changeNotes: Initial release.
