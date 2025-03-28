@@ -982,7 +982,7 @@ if (data.type == 'config') {
         
         // gbraid
         // 2.1.k[gbraid]$i[TIME]
-        _gcl_ag: value => value.split('.').slice(2).join('').substr(1).split('$i').reverse()[1],
+        _gcl_ag: value => value.split('.').slice(2).join('').substring(1).split('$i').reverse()[1],
         
         // msclkid
         // _uet[msclkid]
