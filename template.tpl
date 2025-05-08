@@ -899,6 +899,7 @@ if (data.type == 'config') {
         first: {},
         last: {},
       },
+      filters: {},
       sdk: sdk,
       userDataHash: {
         city: true,
@@ -952,8 +953,6 @@ if (data.type == 'config') {
       config.fieldMap.globals = makeTableMap(data.fieldMapGlobals, 'path', 'field');
 
     if ('object' == getType(data.filters)) {
-
-      config.filters = {};
 
       for (let prop in data.filters) {
         if (! data.filters.hasOwnProperty(prop))
