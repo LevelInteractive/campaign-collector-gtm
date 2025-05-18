@@ -722,6 +722,64 @@ ___TEMPLATE_PARAMETERS___
     ]
   },
   {
+    "type": "GROUP",
+    "name": "consentSettings",
+    "displayName": "Consent Settings",
+    "groupStyle": "ZIPPY_OPEN_ON_PARAM",
+    "subParams": [
+      {
+        "type": "SIMPLE_TABLE",
+        "name": "consentRedactions",
+        "displayName": "Data Redactions",
+        "simpleTableColumns": [
+          {
+            "defaultValue": "",
+            "displayName": "Consent Type",
+            "name": "type",
+            "type": "SELECT",
+            "selectItems": [
+              {
+                "value": "ad_storage",
+                "displayValue": "ad_storage"
+              },
+              {
+                "value": "ad_user_data",
+                "displayValue": "ad_user_data"
+              },
+              {
+                "value": "ad_personalization",
+                "displayValue": "ad_personalization"
+              },
+              {
+                "value": "analytics_storage",
+                "displayValue": "analytics_storage"
+              }
+            ],
+            "isUnique": true
+          },
+          {
+            "defaultValue": "",
+            "displayName": "Cookies to Redact",
+            "name": "redacts",
+            "type": "TEXT",
+            "valueValidators": [
+              {
+                "type": "NON_EMPTY"
+              },
+              {
+                "type": "REGEX",
+                "args": [
+                  "[a-zA-Z0-9_\\-, ]+"
+                ]
+              }
+            ],
+            "valueHint": "Enter a comma separated list of cookie names to redact if consent is not granted."
+          }
+        ]
+      }
+    ]
+  },
+  {
     "type": "TEXT",
     "name": "formId",
     "displayName": "Form ID",
@@ -1042,11 +1100,30 @@ if (data.type == 'config') {
 
     config.enableSpaSupport = data.enableSpaSupport;
 
+
+    // Consent Redactions
+    
+    if (data.consentRedactions) {
+      
+      config.consent = data.consentRedactions.reduce((obj, item) => { 
+        
+        obj[item.type] = {
+          redacts: item.redacts.split(',').map((part) => part.trim())
+        };
+        
+        return obj;
+        
+      }, {});
+      
+    }
+
+
     // Boot the instance
 
     callInWindow('CampaignCollector.create', config, data.instanceKey);
     
-    // Consent
+
+    // Consent Listeners
     
     const consentTypes = [
       'ad_personalization',
