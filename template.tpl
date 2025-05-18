@@ -776,6 +776,13 @@ ___TEMPLATE_PARAMETERS___
             "valueHint": "Enter a comma separated list of cookie names to redact if consent is not granted."
           }
         ]
+      },
+      {
+        "type": "CHECKBOX",
+        "name": "useCommonConsentRedactions",
+        "checkboxText": "Use common consent redactions for popular adtech/martech cookies?",
+        "simpleValueType": true,
+        "help": "When enabled, common cookies will be automatically added to the redaction lists for each applicable consent type."
       }
     ]
   },
@@ -942,14 +949,22 @@ const makeTableMap = require('makeTableMap');
 // Begin Template Code
 
 const globalStore = '_campaignCollector';
-const sdk = 'gtm-tpl@1.0';
-const scriptSrc = 'https://cdn.jsdelivr.net/gh/levelinteractive/campaign-collector@latest/dist/core.min.js';
+const sdk = 'gtm-tpl@1.1.0';
+const scriptVer = data.scriptVer || '1.1.0';
+const scriptSrc = 'https://cdn.jsdelivr.net/gh/levelinteractive/campaign-collector@' + scriptRelease + '/dist/core.min.js';
 
 const methodPath = (method) => [globalStore, data.instanceKey, method].join('.');
 
 if (data.type == 'config') {
   
   injectScript(scriptSrc, () => {
+
+    const consentTypes = [
+      'ad_personalization',
+      'ad_storage',
+      'ad_user_data',
+      'analytics_storage',
+    ];
 
     const config = {
       debug: false,
@@ -1101,36 +1116,57 @@ if (data.type == 'config') {
     config.enableSpaSupport = data.enableSpaSupport;
 
 
-    // Consent Redactions
+    // Consent
+    
+    config.consent = consentTypes.reduce((obj, item) => {
+      obj[item] = {
+        redacts: []
+      };
+      
+      return obj;
+    }, {});
     
     if (data.consentRedactions) {
       
-      config.consent = data.consentRedactions.reduce((obj, item) => { 
-        
-        obj[item.type] = {
-          redacts: item.redacts.split(',').map((part) => part.trim())
-        };
-        
-        return obj;
-        
-      }, {});
+      data.consentRedactions.forEach((item) => {
+        config.consent[item.type].redacts = item.redacts.split(',').map((part) => part.trim());
+      });
       
     }
-
-
+    
+    if (data.useCommonConsentRedactions) {
+      
+      consentTypes.forEach((type) => {
+      
+        const commonRedactions = {
+          'ad_storage': [
+            '_fbp', '_fbc',
+            '_gcl_aw', '_gcl_ag', '_gcl_gb',
+            'li_fat_id',
+            '_uetmsclkid',
+          ],
+          'analytics_storage': [
+            '_ga'
+          ],
+        };
+        
+        if (!commonRedactions[type])
+          return;
+        
+        let redacts = config.consent[type].redacts;
+        config.consent[type].redacts = redacts.concat(commonRedactions[type]);
+        
+      });
+      
+    }
+    
+    
     // Boot the instance
 
     callInWindow('CampaignCollector.create', config, data.instanceKey);
     
 
     // Consent Listeners
-    
-    const consentTypes = [
-      'ad_personalization',
-      'ad_storage',
-      'ad_user_data',
-      'analytics_storage',
-    ];
 
     const consentStatus = (input) => {
       return {
