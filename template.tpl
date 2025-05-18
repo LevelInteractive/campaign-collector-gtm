@@ -1077,10 +1077,10 @@ if (data.type == 'lead') {
     data.gtmOnFailure();
   
   let payload = {
-    properties: makeTableMap(data.properties, 'property', 'value'),
-    userData: makeTableMap(data.userData, 'property', 'value'),
+    properties: data.properties ? makeTableMap(data.properties, 'property', 'value') : {},
+    userData: data.userData ? makeTableMap(data.userData, 'property', 'value') : {},
   };
-  
+
   payload.properties.form_id = data.formId;
   
   callInWindow(methodPath('lead'), payload.properties, payload.userData);
