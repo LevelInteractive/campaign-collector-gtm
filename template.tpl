@@ -1011,8 +1011,12 @@ if (data.type == 'config') {
     if (data.fieldTargetByParentClass)
       config.fieldTargetMethod.push('parentClass');
 
-    if (data.fieldTargetByCustomAttribute)
+    if (data.fieldTargetByCustomAttribute) {
       config.fieldTargetMethod.push('dataAttribute');
+      
+      if (data.fieldDataAttribute)
+        config.fieldDataAttribute = data.fieldDataAttribute;
+    }
 
     if (! config.fieldTargetMethod.length)
       config.fieldTargetMethod = ['name'];
