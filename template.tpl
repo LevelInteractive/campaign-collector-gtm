@@ -1063,7 +1063,7 @@ if (data.type == 'config') {
       
       for (let prop in commonCookieFilters) {
         if(! commonCookieFilters.hasOwnProperty(prop))
-          return;
+          continue;
         
         config.filters[prop] = commonCookieFilters[prop];
       }
